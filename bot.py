@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from selenium import webdriver
 import os
 import time
@@ -27,9 +26,9 @@ class Instagrambot:
         self.login()
 
     def login(self):
-        for i in range(10):
+        for i in range(2):
             print("\n")
-        self.driver.get('{}/login'.format(self.base))
+        self.driver.get('{}login'.format(self.base))
         time.sleep(1)
         self.driver.find_element_by_xpath(
             '//*[@id="m_login_email"]').send_keys(self.username)
@@ -39,10 +38,6 @@ class Instagrambot:
 
         self.driver.find_element_by_xpath(
             '//*[@id="login_password_step_element"]/button').click()
-        time.sleep(5)
-        self.driver.get(self.base)
-
-        # you can find the like button using class name too
 
     def nav_user(self, user):
 
@@ -53,24 +48,60 @@ class Instagrambot:
         try:
 
             time.sleep(2)
-            for i in range(10):
+            for i in range(5):
                 time.sleep(1)
                 self.driver.find_element_by_tag_name(
                     'body').send_keys(Keys.END)
 
             links = self.driver.find_elements_by_class_name('_5msj')
-            f = open("links.txt", "a")
+            f = open('{}_links.txt'.format(userinput), "a")
             for i in links:
                 f.write(str(i.get_attribute('href')))
                 f.write("\n")
             f.close()
-            print("finished \n\n\n\n\n\n\n\n\n")
+            self.likes()
         except:
             pass
 
+    def likes(self):
+
+        # try:
+        posts = open('{}_links.txt'.format(userinput), 'r')
+        for line in posts:
+            self.driver.get(line)
+            likebutton = self.driver.find_element_by_class_name(
+                '_45m8').get_attribute('href')
+            self.driver.get(likebutton)
+            for i in range(10):
+                time.sleep(1)
+                self.driver.find_element_by_tag_name(
+                    'body').send_keys(Keys.END)
+            names = self.driver.find_elements_by_tag_name('span')
+            namefile = open("{}_likes.txt".format(userinput), 'a')
+            for name in range(0, (len(names)-1), 2):
+                number = False
+                trycast = 0
+
+                try:
+                    for letter in names[name].text:
+                        if not number and names[name] != "":
+                            trycast = int(letter)
+                            number = True
+                            print("There was a number, skipped")
+                            break
+                except:
+                    pass
+                if number == False:
+                    namefile.write(str(names[name].text) + "\n")
+            namefile.close()
+            time.sleep(20)
+        posts.close()
+        # except:
+        #     pass
+
 
 if __name__ == '__main__':
-    userinput = "laborforfisher" #input('What user to follow all of their followers: ')
+    userinput = "laborforfisher"
     ig_bot = Instagrambot('takamundy@gmail.com', 'Taka6745!')
     time.sleep(2)
     ig_bot.nav_user(userinput)
