@@ -1,3 +1,6 @@
+from genericpath import exists
+from sre_constants import NOT_LITERAL
+import string
 from selenium import webdriver
 import time
 from selenium import webdriver
@@ -7,10 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import ui
 from webdriver_manager.chrome import ChromeDriverManager
-
-
-global odds
-odds = 110
 
 
 class Instagrambot:
@@ -79,16 +78,19 @@ class Instagrambot:
             for name in range(0, (len(names)-1), 2):
                 number = False
                 trycast = 0
+                print("\n\n\n")
+                for letter in names[name].text:
+                    print("the word is " + names[name].text + " the letter is " + str(letter) +
+                          " the ascii is " + str(ord(letter)))
+                    try:
 
-                try:
-                    for letter in names[name].text:
-                        if not number and names[name] != "":
-                            trycast = int(letter)
-                            number = True
-                            print("There was a number, skipped")
-                            break
-                except:
-                    pass
+                        if number == False:
+                            if ord(letter) <= 64 and letter != " ":
+                                number = True
+                                print("There was a number, skipped")
+                                break
+                    except:
+                        pass
                 if number == False:
                     namefile.write(str(names[name].text) + "\n")
             namefile.close()
