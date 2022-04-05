@@ -1,7 +1,5 @@
 from selenium import webdriver
-import os
 import time
-import random
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
