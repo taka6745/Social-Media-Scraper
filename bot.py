@@ -15,9 +15,9 @@ class Instagrambot:
         self.username = username
         self.password = password
         self.base = 'https://m.facebook.com/'
-        #self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(ChromeDriverManager().install())
         #self.driver = webdriver.Chrome('chromedriver.exe')
-        self.driver = webdriver.Edge('msedgedriver.exe')
+        #self.driver = webdriver.Edge('msedgedriver.exe')
         #self.driver = webdriver.Firefox('geckodriver.exe')
         self.login()
 
@@ -31,9 +31,10 @@ class Instagrambot:
 
         self.driver.find_element_by_xpath(
             '//*[@id="m_login_password"]').send_keys(self.password)
-
-        self.driver.find_element_by_xpath(
-            '//*[@id="login_password_step_element"]/button').click()
+        self.driver.find_element_by_name(
+            'driver.findElement(By.name(\"submit\"').send_keys(Keys.ENTER)
+        # self.driver.find_element_by_xpath(
+        #     '//*[@id="login_password_step_element"]/button').click()
         print("\n\n\nbutton clicked\n\n\n\n")
 
     def nav_user(self, user):
@@ -70,24 +71,25 @@ class Instagrambot:
                 time.sleep(1)
                 self.driver.find_element_by_tag_name(
                     'body').send_keys(Keys.END)
-            commentreplybutton = self.driver.find_elements_by_class_name('_4ayj')
+            commentreplybutton = self.driver.find_elements_by_class_name(
+                '_4ayj')
             for i in commentreplybutton:
                 i.click()
             commentorname = self.driver.find_elements_by_class_name('_2b05')
             commentfile = open("{}_comment.txt".format(userinput), 'a')
             for commentor in range(0, (len(commentorname)-1), 2):
                 for letter in commentorname[commentor].text:
-                        print("the word is " + commentorname[commentor].text + " the letter is " + str(letter) +
-                            " the ascii is " + str(ord(letter)))
-                        try:
+                    print("the word is " + commentorname[commentor].text + " the letter is " + str(letter) +
+                          " the ascii is " + str(ord(letter)))
+                    try:
 
-                            if number == False:
-                                if ord(letter) <= 64 and letter != " " and letter != "-":
-                                    number = True
-                                    print("There was a number, skipped")
-                                    break
-                        except:
-                            pass
+                        if number == False:
+                            if ord(letter) <= 64 and letter != " " and letter != "-":
+                                number = True
+                                print("There was a number, skipped")
+                                break
+                    except:
+                        pass
                 if number == False:
                     commentfile.write(str(names[name].text) + "\n")
             commentfile.close()
