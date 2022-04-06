@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import ui
 from webdriver_manager.chrome import ChromeDriverManager
+import pyautogui
 
 
 class Instagrambot:
@@ -31,8 +32,9 @@ class Instagrambot:
 
         self.driver.find_element_by_xpath(
             '//*[@id="m_login_password"]').send_keys(self.password)
-        self.driver.find_element_by_name(
-            'driver.findElement(By.name(\"submit\"').send_keys(Keys.ENTER)
+        pyautogui.press("enter")
+
+        # self.driver.find_element_by_tag_name('body').send_keys(Keys.RETURN)
         # self.driver.find_element_by_xpath(
         #     '//*[@id="login_password_step_element"]/button').click()
         print("\n\n\nbutton clicked\n\n\n\n")
@@ -71,10 +73,6 @@ class Instagrambot:
                 time.sleep(1)
                 self.driver.find_element_by_tag_name(
                     'body').send_keys(Keys.END)
-            commentreplybutton = self.driver.find_elements_by_class_name(
-                '_4ayj')
-            for i in commentreplybutton:
-                i.click()
             commentorname = self.driver.find_elements_by_class_name('_2b05')
             commentfile = open("{}_comment.txt".format(userinput), 'a')
             for commentor in range(0, (len(commentorname)-1), 2):
@@ -91,7 +89,7 @@ class Instagrambot:
                     except:
                         pass
                 if number == False:
-                    commentfile.write(str(names[name].text) + "\n")
+                    commentfile.write(str(commentorname[commentor].text) + "\n")
             commentfile.close()
             likebutton = self.driver.find_element_by_class_name(
                 '_45m8').get_attribute('href')
@@ -121,7 +119,7 @@ class Instagrambot:
                 if number == False:
                     namefile.write(str(names[name].text) + "\n")
             namefile.close()
-            time.sleep(20)
+            time.sleep(3)
         posts.close()
         # except:
         #     pass
@@ -129,7 +127,7 @@ class Instagrambot:
 
 if __name__ == '__main__':
     userinput = "laborforfisher"
-    ig_bot = Instagrambot('takamundy@gmail.com', 'Taka6745!')
+    ig_bot = Instagrambot('takamundy@gmail.com', 'Lollyman2002!@#')
     time.sleep(2)
     ig_bot.nav_user(userinput)
     ig_bot.scroll()
