@@ -1,3 +1,4 @@
+from cgi import print_arguments
 from os import kill
 from selenium import webdriver
 import time
@@ -26,6 +27,7 @@ class Instagrambot:
     def login(self):
         for i in range(3):
             print("\n")
+
         self.driver.get('{}login'.format(self.base))
         time.sleep(3)
         self.driver.find_element(
@@ -37,9 +39,9 @@ class Instagrambot:
         self.driver.find_element(
             by=By.XPATH, value='//*[@id="login_password_step_element"]/button').click()
 
-    def nav_user(self, user):
-
-        self.driver.get('{}/{}/'.format(self.base, user))
+    def nav_user(self, userinput):
+        time.sleep(2)
+        self.driver.get('{}{}/'.format(self.base, userinput))
 
     def scroll(self):
 
@@ -79,57 +81,64 @@ class Instagrambot:
                 time.sleep(1)
                 self.driver.find_element(
                     by=By.TAG_NAME, value='body').send_keys(Keys.END)
+            try:
+                commentornames = self.driver.find_elements(
+                    by=By.TAG_NAME, value='a')
+                commentorname = []
+                for i in range(len(commentornames)-1):
+                    commentorname.append(commentornames[i].text)
 
-            commentornames = self.driver.find_elements(by=By.TAG_NAME, value='a')
-            commentorname = []
-            for i in range(len(commentornames)-1):
-                commentorname.append(commentornames[i].text)
+                commentfile = open("{}_comment.txt".format(userinput), 'a')
+                for commentor in range((len(commentorname)-1)):
+                    number = False
+                    banned = ["Like", "Labor For Fisher", "LEARN MORE", ' ', '',
+                              "Reply", "More", "Share", "Comment", " View more comments…"]
+                    for i in range(len(banned)-1):
+                        if commentorname[commentor] == banned[i]:
+                            number = True
+                    for letter in commentorname[commentor]:
 
-            
-            commentfile = open("{}_comment.txt".format(userinput), 'a')
-            for commentor in range((len(commentorname)-1)):
-                number = False
-                banned = ["Like", "Labor For Fisher","LEARN MORE", ' ','',"Reply","More","Share","Comment"," View more comments…"]
-                for i in range(len(banned)-1):
-                    if commentorname[commentor] == banned[i]:
-                        number = True
-                for letter in commentorname[commentor]:
-                    print("*************************the word is " + commentorname[commentor]+ " the letter is " + str(letter) +
-                          " the ascii is " + str(ord(letter)))
-                    
+                        if number == False:
+                            if ord(letter) <= 64 and letter != " " and letter != "-" and letter != "'":
+                                number = True
+
+                                break
 
                     if number == False:
-                        if ord(letter) <= 64 and letter != " " and letter != "-":
-                            number = True
-                            print("There was a number, skipped")
-                            break
+                        commentfile.write(
+                            str(commentorname[commentor]) + "\n")
+                commentfile.close()
 
-                if number == False:
-                    commentfile.write(
-                        str(commentorname[commentor]) + "\n")
-            commentfile.close()
-            likebutton = self.driver.find_element_by_class_name(
-                '_45m8').get_attribute('href')
+            except:
+                print("ERROR: Probably no comments")
+
+            likebutton = self.driver.find_element(
+                by=By.CLASS_NAME, value='_45m8').get_attribute('href')
             self.driver.get(likebutton)
-            for i in range(4):
-                time.sleep(1)
-                self.driver.find_element_by_tag_name(
-                    'body').send_keys(Keys.END)
-            names = self.driver.find_elements_by_tag_name('span')
+            for i in range(10):
+                time.sleep(0.5)
+                self.driver.find_element(
+                    by=By.TAG_NAME, value='body').send_keys(Keys.END)
+                try:
+                    self.driver.find_element(
+                        by=By.XPATH, value='//*[@id="reaction_profile_pager"]/a').click()
+                except:
+                    pass
+
+            names = self.driver.find_elements(by=By.TAG_NAME, value='span')
             namefile = open("{}_likes.txt".format(userinput), 'a')
             for name in range(0, (len(names)-1), 2):
                 number = False
                 trycast = 0
-                print("\n\n\n")
+
                 for letter in names[name].text:
-                    print("the word is " + names[name].text + " the letter is " + str(letter) +
-                          " the ascii is " + str(ord(letter)))
+
                     try:
 
                         if number == False:
-                            if ord(letter) <= 64 and letter != " " and letter != "-":
+                            if ord(letter) <= 64 and letter != " " and letter != "-" and letter != "'":
                                 number = True
-                                print("There was a number, skipped")
+
                                 break
                     except:
                         pass
@@ -137,9 +146,51 @@ class Instagrambot:
                     namefile.write(str(names[name].text) + "\n")
             namefile.close()
             time.sleep(1)
+
+            # #try:
+            # if(True):
+            #     self.driver.get(line)
+            #     for i in range(3):
+            #         time.sleep(1)
+            #         self.driver.find_element(
+            #             by=By.TAG_NAME, value='body').send_keys(Keys.END)
+            #     sharebutton = self.driver.find_elements(
+            #         by=By.CLASS_NAME, value='_43lx _55wr')
+            #     print(sharebutton[0])
+
+            #     time.sleep(100)
+            #     self.driver.get(sharebutton)
+            #     for i in range(10):
+            #         time.sleep(0.5)
+            #         self.driver.find_element(
+            #             by=By.TAG_NAME, value='body').send_keys(Keys.END)
+
+            #     sharenames = self.driver.find_elements_by_tag_name('span')
+            #     sharefile = open("{}_shares.txt".format(userinput), 'a')
+            #     for name in range(0, (len(sharenames)-1), 2):
+            #         number = False
+            #         for letter in sharenames[name].text:
+
+            #             try:
+
+            #                 if number == False:
+            #                     if ord(letter) <= 64 and letter != " " and letter != "-" and letter != "'":
+            #                         number = True
+
+            #                         break
+            #             except:
+            #                 pass
+            #         if number == False:
+            #             sharefile.write(str(sharenames[name].text) + "\n")
+            #     sharefile.close()
+            #     time.sleep(1)
+            #     # except:
+            #     #     print("ERROR: Probably no share button")
+
+            # # except:
+            #     pass
+
         posts.close()
-        # except:
-        #     pass
 
 
 if __name__ == '__main__':
