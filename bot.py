@@ -1,3 +1,4 @@
+from os import kill
 from selenium import webdriver
 import time
 from selenium import webdriver
@@ -7,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import ui
 from webdriver_manager.chrome import ChromeDriverManager
-import pyautogui
+#import pyautogui
 
 
 class Instagrambot:
@@ -23,22 +24,18 @@ class Instagrambot:
         self.login()
 
     def login(self):
-        for i in range(2):
+        for i in range(3):
             print("\n")
         self.driver.get('{}login'.format(self.base))
-        time.sleep(1)
-        self.driver.find_element_by_xpath(
-            '//*[@id="m_login_email"]').send_keys(self.username)
+        time.sleep(3)
+        self.driver.find_element(
+            by=By.XPATH, value='//*[@id="m_login_email"]').send_keys(self.username)
 
-        self.driver.find_element_by_xpath(
-            '//*[@id="m_login_password"]').send_keys(self.password)
-        time.sleep(1)
-        pyautogui.press("enter")
-        time.sleep(1)
+        self.driver.find_element(
+            by=By.XPATH, value='//*[@id="m_login_password"]').send_keys(self.password)
         # self.driver.find_element_by_tag_name('body').send_keys(Keys.RETURN)
-        # self.driver.find_element_by_xpath(
-        #     '//*[@id="login_password_step_element"]/button').click()
-        print("\n\n\nbutton clicked\n\n\n\n")
+        self.driver.find_element(
+            by=By.XPATH, value='//*[@id="login_password_step_element"]/button').click()
 
     def nav_user(self, user):
 
@@ -46,23 +43,23 @@ class Instagrambot:
 
     def scroll(self):
 
-        try:
+        # try:
 
-            time.sleep(2)
-            for i in range(500):
-                time.sleep(1)
-                self.driver.find_element_by_tag_name(
-                    'body').send_keys(Keys.END)
+        time.sleep(3)
+        for i in range(5):
+            time.sleep(1)
+            self.driver.find_element(
+                by=By.TAG_NAME, value='body').send_keys(Keys.END)
 
-            links = self.driver.find_elements_by_class_name('_5msj')
-            f = open('{}_links.txt'.format(userinput), "a")
-            for i in links:
-                f.write(str(i.get_attribute('href')))
-                f.write("\n")
-            f.close()
-            self.likes()
-        except:
-            pass
+        links = self.driver.find_elements(by=By.CLASS_NAME, value='_5msj')
+        f = open('{}_links.txt'.format(userinput), "a")
+        for i in links:
+            f.write(str(i.get_attribute('href')))
+            f.write("\n")
+        f.close()
+        self.likes()
+        # except:
+     #   pass
 
     def likes(self):
 
@@ -72,13 +69,32 @@ class Instagrambot:
             self.driver.get(line)
             for i in range(3):
                 time.sleep(1)
-                self.driver.find_element_by_tag_name(
-                    'body').send_keys(Keys.END)
-            commentorname = self.driver.find_elements_by_class_name('_2b05')
+                self.driver.find_element(
+                    by=By.TAG_NAME, value='body').send_keys(Keys.END)
+            clickable = self.driver.find_elements(
+                by=By.CLASS_NAME, value='_4ayj')
+            for i in clickable:
+                i.click()
+            for i in range(3):
+                time.sleep(1)
+                self.driver.find_element(
+                    by=By.TAG_NAME, value='body').send_keys(Keys.END)
+
+            commentornames = self.driver.find_elements(by=By.TAG_NAME, value='a')
+            commentorname = []
+            for i in range(len(commentornames)-1):
+                commentorname.append(commentornames[i].text)
+
+            
             commentfile = open("{}_comment.txt".format(userinput), 'a')
-            for commentor in range(0, (len(commentorname)-1), 2):
-                for letter in commentorname[commentor].text:
-                    print("*************************the word is " + commentorname[commentor].text + " the letter is " + str(letter) +
+            for commentor in range((len(commentorname)-1)):
+                number = False
+                banned = ["Like", "Labor For Fisher","LEARN MORE", ' ','',"Reply","More","Share","Comment"," View more comments…"]
+                for i in range(len(banned)-1):
+                    if commentorname[commentor] == banned[i]:
+                        number = True
+                for letter in commentorname[commentor]:
+                    print("*************************the word is " + commentorname[commentor]+ " the letter is " + str(letter) +
                           " the ascii is " + str(ord(letter)))
                     
 
@@ -87,9 +103,10 @@ class Instagrambot:
                             number = True
                             print("There was a number, skipped")
                             break
-                    
+
                 if number == False:
-                    commentfile.write(str(commentorname[commentor].text) + "\n")
+                    commentfile.write(
+                        str(commentorname[commentor]) + "\n")
             commentfile.close()
             likebutton = self.driver.find_element_by_class_name(
                 '_45m8').get_attribute('href')
