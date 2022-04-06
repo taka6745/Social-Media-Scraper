@@ -32,8 +32,9 @@ class Instagrambot:
 
         self.driver.find_element_by_xpath(
             '//*[@id="m_login_password"]').send_keys(self.password)
+        time.sleep(1)
         pyautogui.press("enter")
-
+        time.sleep(1)
         # self.driver.find_element_by_tag_name('body').send_keys(Keys.RETURN)
         # self.driver.find_element_by_xpath(
         #     '//*[@id="login_password_step_element"]/button').click()
@@ -48,7 +49,7 @@ class Instagrambot:
         try:
 
             time.sleep(2)
-            for i in range(5):
+            for i in range(500):
                 time.sleep(1)
                 self.driver.find_element_by_tag_name(
                     'body').send_keys(Keys.END)
@@ -77,17 +78,16 @@ class Instagrambot:
             commentfile = open("{}_comment.txt".format(userinput), 'a')
             for commentor in range(0, (len(commentorname)-1), 2):
                 for letter in commentorname[commentor].text:
-                    print("the word is " + commentorname[commentor].text + " the letter is " + str(letter) +
+                    print("*************************the word is " + commentorname[commentor].text + " the letter is " + str(letter) +
                           " the ascii is " + str(ord(letter)))
-                    try:
+                    
 
-                        if number == False:
-                            if ord(letter) <= 64 and letter != " " and letter != "-":
-                                number = True
-                                print("There was a number, skipped")
-                                break
-                    except:
-                        pass
+                    if number == False:
+                        if ord(letter) <= 64 and letter != " " and letter != "-":
+                            number = True
+                            print("There was a number, skipped")
+                            break
+                    
                 if number == False:
                     commentfile.write(str(commentorname[commentor].text) + "\n")
             commentfile.close()
@@ -119,7 +119,7 @@ class Instagrambot:
                 if number == False:
                     namefile.write(str(names[name].text) + "\n")
             namefile.close()
-            time.sleep(3)
+            time.sleep(1)
         posts.close()
         # except:
         #     pass
