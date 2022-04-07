@@ -12,7 +12,7 @@ from selenium.webdriver.support import ui
 from webdriver_manager.chrome import ChromeDriverManager
 #import pyautogui
 
-amountofscrollpost = 1000
+amountofscrollpost = 5000
 amountofscrollcomment = 5
 amountofscrolllike = 10
 amountofscrollshares = 3
@@ -52,16 +52,20 @@ class FacebookCollector:
     def scroll(self):
 
         time.sleep(3)
+        f = open('{}_links.txt'.format(userinput), "a")
         for i in range(amountofscrollpost):
             time.sleep(1)
             self.driver.find_element(
                 by=By.TAG_NAME, value='body').send_keys(Keys.END)
-
-        links = self.driver.find_elements(by=By.CLASS_NAME, value='_5msj')
-        f = open('{}_links.txt'.format(userinput), "a")
-        for i in links:
-            f.write(str(i.get_attribute('href')))
-            f.write("\n")
+            links = self.driver.find_elements(by=By.CLASS_NAME, value='_5msj')
+        
+            for i in links:
+                if i.get_attribute('href') not in links:
+                    
+                    f.write(str(i.get_attribute('href')))
+                    f.write("\n")
+                
+        
         f.close()
         self.likes()
 
