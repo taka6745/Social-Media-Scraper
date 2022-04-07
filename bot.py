@@ -1,4 +1,5 @@
 from cgi import print_arguments
+from operator import contains
 from os import kill
 from selenium import webdriver
 import time
@@ -11,8 +12,13 @@ from selenium.webdriver.support import ui
 from webdriver_manager.chrome import ChromeDriverManager
 #import pyautogui
 
+amountofscrollpost = 1000
+amountofscrollcomment = 5
+amountofscrolllike = 10
+amountofscrollshares = 3
 
-class Instagrambot:
+
+class FacebookCollector:
 
     def __init__(self, username, password):
         self.username = username
@@ -45,10 +51,8 @@ class Instagrambot:
 
     def scroll(self):
 
-        # try:
-
         time.sleep(3)
-        for i in range(5):
+        for i in range(amountofscrollpost):
             time.sleep(1)
             self.driver.find_element(
                 by=By.TAG_NAME, value='body').send_keys(Keys.END)
@@ -60,16 +64,13 @@ class Instagrambot:
             f.write("\n")
         f.close()
         self.likes()
-        # except:
-     #   pass
 
     def likes(self):
 
-        # try:
         posts = open('{}_links.txt'.format(userinput), 'r')
         for line in posts:
             self.driver.get(line)
-            for i in range(3):
+            for i in range(amountofscrollcomment):
                 time.sleep(1)
                 self.driver.find_element(
                     by=By.TAG_NAME, value='body').send_keys(Keys.END)
@@ -77,8 +78,8 @@ class Instagrambot:
                 by=By.CLASS_NAME, value='_4ayj')
             for i in clickable:
                 i.click()
-            for i in range(3):
-                time.sleep(1)
+            for i in range(amountofscrollcomment+2):
+                time.sleep(0.5)
                 self.driver.find_element(
                     by=By.TAG_NAME, value='body').send_keys(Keys.END)
             try:
@@ -115,7 +116,7 @@ class Instagrambot:
             likebutton = self.driver.find_element(
                 by=By.CLASS_NAME, value='_45m8').get_attribute('href')
             self.driver.get(likebutton)
-            for i in range(10):
+            for i in range(amountofscrolllike):
                 time.sleep(0.5)
                 self.driver.find_element(
                     by=By.TAG_NAME, value='body').send_keys(Keys.END)
@@ -147,55 +148,73 @@ class Instagrambot:
             namefile.close()
             time.sleep(1)
 
-            # #try:
-            # if(True):
-            #     self.driver.get(line)
-            #     for i in range(3):
-            #         time.sleep(1)
-            #         self.driver.find_element(
-            #             by=By.TAG_NAME, value='body').send_keys(Keys.END)
-            #     sharebutton = self.driver.find_elements(
-            #         by=By.CLASS_NAME, value='_43lx _55wr')
-            #     print(sharebutton[0])
+            try:
 
-            #     time.sleep(100)
-            #     self.driver.get(sharebutton)
-            #     for i in range(10):
-            #         time.sleep(0.5)
-            #         self.driver.find_element(
-            #             by=By.TAG_NAME, value='body').send_keys(Keys.END)
+                self.driver.get(line)
+                for i in range(amountofscrollshares):
+                    time.sleep(1)
+                    self.driver.find_element(
+                        by=By.TAG_NAME, value='body').send_keys(Keys.END)
+                sharebutton = self.driver.find_elements(
+                    by=By.XPATH, value="//a[@href]")
+                foundbutton = ''
+                for i in range(len(sharebutton)-1):
+                    if "/browse/shares?id=" in sharebutton[i].get_attribute('href'):
+                        foundbutton = (sharebutton[i].get_attribute('href'))
 
-            #     sharenames = self.driver.find_elements_by_tag_name('span')
-            #     sharefile = open("{}_shares.txt".format(userinput), 'a')
-            #     for name in range(0, (len(sharenames)-1), 2):
-            #         number = False
-            #         for letter in sharenames[name].text:
+                self.driver.get(foundbutton)
+                for i in range(10):
+                    time.sleep(0.5)
+                    self.driver.find_element(
+                        by=By.TAG_NAME, value='body').send_keys(Keys.END)
 
-            #             try:
+                sharenames = self.driver.find_elements(
+                    by=By.TAG_NAME, value='span')
+                sharefile = open("{}_shares.txt".format(userinput), 'a')
+                for name in range(0, (len(sharenames)-1), 2):
+                    number = False
+                    for letter in sharenames[name].text:
 
-            #                 if number == False:
-            #                     if ord(letter) <= 64 and letter != " " and letter != "-" and letter != "'":
-            #                         number = True
+                        try:
 
-            #                         break
-            #             except:
-            #                 pass
-            #         if number == False:
-            #             sharefile.write(str(sharenames[name].text) + "\n")
-            #     sharefile.close()
-            #     time.sleep(1)
-            #     # except:
-            #     #     print("ERROR: Probably no share button")
+                            if number == False:
+                                if ord(letter) <= 64 and letter != " " and letter != "-" and letter != "'":
+                                    number = True
 
-            # # except:
-            #     pass
+                                    break
+                        except:
+                            pass
+                    if number == False:
+                        sharefile.write(str(sharenames[name].text) + "\n")
+                sharefile.close()
+                time.sleep(1)
+
+            except:
+                pass
 
         posts.close()
 
 
 if __name__ == '__main__':
-    userinput = "laborforfisher"
-    ig_bot = Instagrambot('takamundy@gmail.com', 'Lollyman2002!@#')
-    time.sleep(2)
-    ig_bot.nav_user(userinput)
-    ig_bot.scroll()
+
+    fb = FacebookCollector('takamundy@gmail.com', 'Lollyman2002!@#')
+    accounts = ['laborforfisher', 'judeneandrewsyourvoiceinfisher', 'hashtag/laborforfisher', 'MarkBaileyMP', 'SunshineCoastYoungLabor', 'MsAliFrance',
+                'suefergusonlaborfairfax', 'profile.php?id=100066535325703', 'profile.php?id=100068142039490', 'JasonHuntMP', 'Labor.for.Maroochydore', 'burnsidealp', 'profile.php?id=100069288426668', 'profile.php?id=100068979527256', 'profile.php?id=100069271657040']
+    for i in accounts:
+        if i == 'profile.php?id=100069271657040':
+            userinput = 'CaloundraALP'
+        elif i == 'profile.php?id=100068979527256':
+            userinput = 'NambourALP'
+        elif i == 'profile.php?id=100069288426668':
+            userinput = "NinderryALP"
+        elif i == 'profile.php?id=100068142039490':
+            userinput = "KawanaALP"
+        elif i == 'profile.php?id=100066535325703':
+            userinput = 'FairfaxALP'
+        elif i == 'hashtag/laborforfisher':
+            userinput = "hashtaglaborforfisher"
+        else:
+            userinput = i
+        time.sleep(2)
+        fb.nav_user(i)
+        fb.scroll()
