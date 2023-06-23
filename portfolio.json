@@ -2,7 +2,7 @@
     "title": "Instagram Scraper",
     "description": "The scraper logs into Instagram and can be used to scrape posts, followers, following, and profile information from a user's Instagram account. It can also be used to scrape hashtag information.",
     "type": "API",
-    "photo": "https://cdn-icons-png.flaticon.com/512/174/174855.png",
+    "photo": "https://icons-for-free.com/iconfiles/png/512/high+quality+instagram+media+social+social+media+square-1320192615960625265.png",
     "tags": "Python, Selenium, Web Scraping, Instagram",
     "related_projects": ""
 }
